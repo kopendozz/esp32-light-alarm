@@ -1,0 +1,47 @@
+menu "esp32-light-alarm Configuration"
+
+    orsource "$IDF_PATH/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+
+    config ALARM_STATUS_LED_GPIO
+        int "Status LED GPIO number"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 48
+        help
+            GPIO driving the onboard addressable (WS2812-style) status LED,
+            lit solid while the alarm is sounding. ESP32-S3-DevKitC-1 boards
+            use GPIO38 (v1.1) or GPIO48 (v1.0) -- check your board revision.
+
+    config ALARM_LIGHT_THRESHOLD
+        int "Light threshold (raw ADC1 reading, 0-4095)"
+        range 0 4095
+        default 2500
+        help
+            Raw 12-bit ADC1 reading from the LDR voltage divider above which
+            the room counts as "light" and the alarm sounds. Watch the raw
+            values streamed to the serial monitor (idf.py monitor) while
+            covering/uncovering the photoresistor to pick a real threshold
+            for your wiring, then set it here.
+
+    config ALARM_BUZZER_GPIO
+        int "Buzzer PWM GPIO number"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 5
+        help
+            GPIO driving the passive piezo buzzer via LEDC PWM.
+
+    config ALARM_BUTTON_GPIO
+        int "Dismiss button GPIO number"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+        default 6
+        help
+            GPIO for the active-low dismiss button. Uses the internal
+            pull-up, so no external resistor is needed.
+
+    config ALARM_BUZZER_FREQ_HZ
+        int "Buzzer tone frequency (Hz)"
+        range 100 10000
+        default 2000
+        help
+            LEDC PWM frequency driving the piezo buzzer.
+
+endmenu
